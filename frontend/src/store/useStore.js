@@ -113,7 +113,6 @@ export const useUserStore = create((set, get) => ({
           },
         }
       );
-      set({ loading: false });
       return res.data;
     } catch (err) {
       set({ loading: false });
@@ -164,6 +163,44 @@ export const useUserStore = create((set, get) => ({
       set({ storeDetails: res.data });
     } catch (err) {
       console.error("Failed to fetch store details", err);
+    }
+  },
+
+  fetchStoreOwners: async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/admin/store-owners",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      set({ allUsers: res.data });
+      return res.data;
+    } catch (error) {
+      console.error("Failed to fetch store owners", error);
+      return [];
+    }
+  },
+  addStore: async (storeData) => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/admin/add-store",
+        storeData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return res.data;
+    } catch (error) {
+      console.error("Failed to add store", error);
+      throw error;
     }
   },
 

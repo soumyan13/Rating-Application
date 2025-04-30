@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useUserStore } from "../store/useStore";
 import AddUserModal from "../components/AddUserModal";
+import AddStoreModal from "../components/AddStoreModal";
 
 const AdminDashboard = () => {
   const {
@@ -15,7 +16,8 @@ const AdminDashboard = () => {
     fetchAllStores,
   } = useUserStore();
 
-  const [showModal, setShowModal] = useState(false);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [showStoreModal, setShowStoreModal] = useState(false);
 
   useEffect(() => {
     fetchDashboardStats();
@@ -36,12 +38,20 @@ const AdminDashboard = () => {
     <div className="mt-20 p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Welcome Admin: {user?.name}</h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          + Add User
-        </button>
+        <div className="flex space-x-4">
+          <button
+            onClick={() => setShowUserModal(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            + Add User
+          </button>
+          <button
+            onClick={() => setShowStoreModal(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            + Add Store
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
@@ -118,9 +128,15 @@ const AdminDashboard = () => {
         </table>
       </div>
       <AddUserModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={showUserModal}
+        onClose={() => setShowUserModal(false)}
         refreshUsers={fetchAllUsers}
+      />
+
+      <AddStoreModal
+        isOpen={showStoreModal}
+        onClose={() => setShowStoreModal(false)}
+        refreshStores={fetchAllStores}
       />
     </div>
   );

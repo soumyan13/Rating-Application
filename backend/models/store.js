@@ -1,5 +1,4 @@
-
-const {pool} = require('../config/db');
+const { pool } = require("../config/db");
 
 const Store = {
   async create(storeData) {
@@ -22,12 +21,16 @@ const Store = {
   },
 
   async findById(id) {
-    const [rows] = await pool.query(
-      `SELECT * FROM stores WHERE id = ?`,
-      [id]
-    );
+    const [rows] = await pool.query(`SELECT * FROM stores WHERE id = ?`, [id]);
     return rows[0];
-  }
+  },
+
+  async findByName(name) {
+    const [rows] = await pool.query(`SELECT * FROM stores WHERE name = ?`, [
+      name,
+    ]);
+    return rows[0];
+  },
 };
 
 module.exports = Store;

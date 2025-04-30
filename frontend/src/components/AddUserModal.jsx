@@ -2,6 +2,9 @@ import React from "react";
 import { useUserStore } from "../store/useStore";
 
 const AddUserModal = ({ isOpen, onClose, refreshUsers }) => {
+  const fetchDashboardStats = useUserStore(
+    (state) => state.fetchDashboardStats
+  );
   if (!isOpen) return null;
 
   const handleAddUser = async (e) => {
@@ -17,6 +20,7 @@ const AddUserModal = ({ isOpen, onClose, refreshUsers }) => {
 
     try {
       await useUserStore.getState().addUser(newUser);
+      await fetchDashboardStats();
       alert("User added successfully");
       form.reset();
       refreshUsers();
@@ -70,7 +74,6 @@ const AddUserModal = ({ isOpen, onClose, refreshUsers }) => {
             <option value="">Select Role</option>
             <option value="USER">Normal User</option>
             <option value="STORE-OWNER">Store</option>
-            <option value="ADMIN">Admin</option>
           </select>
           <button
             type="submit"
