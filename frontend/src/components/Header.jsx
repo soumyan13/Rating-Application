@@ -11,40 +11,58 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-md px-6 py-4 flex justify-between items-center fixed top-0 w-full z-10">
-      <Link to="/" className="text-2xl font-bold text-blue-600">
+    <header className="bg-gradient-to-r from-blue-600 to-blue-800 shadow-lg px-8 py-4 flex justify-between items-center fixed top-0 w-full z-10 text-white">
+      <Link
+        to="/"
+        className="text-3xl font-extrabold hover:text-yellow-300 transition-all"
+      >
         Rating Application
       </Link>
 
-      <nav className=" flex items-center gap-6">
+      <nav className="flex items-center gap-8">
         {user ? (
           <>
-            <span className="text-gray-800 font-medium">
+            <span className="text-lg font-semibold text-yellow-300">
               {user.name} ({user.role})
             </span>
 
             {user.role === "ADMIN" && (
-              <Link to="/dashboard" className="text-blue-500 hover:underline">
+              <Link
+                to="/dashboard"
+                className="text-lg font-semibold hover:text-yellow-300 transition-all"
+              >
                 Dashboard
               </Link>
             )}
 
             {user.role === "STORE-OWNER" && (
-              <Link to="/my-store" className="text-blue-500 hover:underline">
+              <Link
+                to="/my-store"
+                className="text-lg font-semibold hover:text-yellow-300 transition-all"
+              >
                 My Store
               </Link>
             )}
 
-            <div onClick={handleLogout} className="bg-red-500 text-white">
+            <div
+              onClick={handleLogout}
+              className="bg-red-500 px-6 py-2 rounded-full cursor-pointer hover:bg-red-700 transition-all"
+            >
               Logout
             </div>
           </>
         ) : (
           <>
-            <Link to="/login" className="text-blue-600 hover:underline">
+            <Link
+              to="/login"
+              className="text-lg font-semibold hover:text-yellow-300 transition-all"
+            >
               Login
             </Link>
-            <Link to="/signup" className="text-blue-600 hover:underline">
+            <Link
+              to="/signup"
+              className="text-lg font-semibold hover:text-yellow-300 transition-all"
+            >
               Signup
             </Link>
           </>

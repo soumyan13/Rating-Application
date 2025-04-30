@@ -1,4 +1,5 @@
-const { Store } = require('../models');
+const { Store } = require("../models");
+const { pool } = require("../config/db");
 
 exports.listStores = async (req, res, next) => {
   try {

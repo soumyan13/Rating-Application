@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-export const useUserStore = create((set) => ({
+export const useUserStore = create((set, get) => ({
   user: null,
   role: null,
   loading: false,
@@ -9,6 +9,9 @@ export const useUserStore = create((set) => ({
   allUsers: [],
   allStores: [],
   filters: { search: "" },
+  stores: [],
+  userRatings: {},
+  storeDetails: null,
 
   setFilters: (filters) => set({ filters }),
 
@@ -115,6 +118,67 @@ export const useUserStore = create((set) => ({
     } catch (err) {
       set({ loading: false });
       throw err;
+    }
+  },
+
+  fetchStores: async () => {
+    const { data } = await axios.get("http://localhost:5000/api/stores");
+    set({ stores: data });
+  },
+
+  fetchUserRatings: async (userId) => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:5000/api/ratings/user/${userId}`
+      );
+      if (Array.isArray(data)) {
+        const ratingsMap = {};
+        data.forEach((r) => {
+          ratingsMap[r.store_id] = r.rating;
+        });
+        set({ userRatings: ratingsMap });
+      } else {
+        console.error("Invalid data format received:", data);
+        set({ userRatings: {} });
+      }
+    } catch (error) {
+      console.error("Error fetching user ratings:", error);
+      set({ userRatings: {} });
+    }
+  },
+
+  submitRating: async ({ userId, storeId, rating }) => {
+    await axios.post("http://localhost:5000/api/ratings/submit", {
+      user_id: userId,
+      store_id: storeId,
+      rating,
+    });
+    await get().fetchUserRatings(userId);
+  },
+
+  fetchStoreDetails: async (ownerId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/ratings/user/${ownerId}`
+      );
+      set({ storeDetails: res.data });
+    } catch (err) {
+      console.error("Failed to fetch store details", err);
+    }
+  },
+
+  updatePassword: async (userId, newPassword) => {
+    try {
+      await axios.put(
+        `http://localhost:5000/api/users/${userId}/update-password`,
+        {
+          password: newPassword,
+        }
+      );
+      return { success: true, message: "Password updated successfully." };
+    } catch (error) {
+      console.error("Failed to update password", error);
+      return { success: false, message: "Failed to update password." };
     }
   },
 }));

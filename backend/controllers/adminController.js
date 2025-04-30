@@ -1,4 +1,6 @@
 const { User, Store, Rating } = require("../models");
+const { pool } = require("../config/db");
+const bcrypt = require("bcrypt");
 
 exports.dashboard = async (req, res, next) => {
   try {

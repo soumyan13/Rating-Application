@@ -1,5 +1,4 @@
-
-const pool = require('../config/db');
+const pool = require("../config/db");
 
 const Rating = {
   async submitRating(userId, storeId, rating) {
@@ -40,7 +39,7 @@ const Rating = {
       [storeId]
     );
     return rows[0]?.average || 0;
-  }
+  },
 };
 
 module.exports = Rating;
