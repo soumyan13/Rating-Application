@@ -12,12 +12,14 @@ import StoreOwnerDashboard from "./pages/StoreOwnerDashboard";
 import { useUserStore } from "./store/useStore";
 import "./App.css";
 import Header from "./components/Header";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const { user, role } = useUserStore();
 
   return (
     <Router>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Header />
       <Routes>
         <Route path="/signup" element={<Signup />} />
@@ -26,8 +28,8 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
         )}
         {role === "USER" && <Route path="/user" element={<UserDashboard />} />}
-        {role === "STORE-OWNER" && (
-          <Route path="/store-owner" element={<StoreOwnerDashboard />} />
+        {role === "STORE_OWNER" && (
+          <Route path="/store_owner" element={<StoreOwnerDashboard />} />
         )}
 
         <Route

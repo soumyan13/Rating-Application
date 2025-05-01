@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const useUserStore = create((set, get) => ({
   user: null,
@@ -11,7 +12,8 @@ export const useUserStore = create((set, get) => ({
   filters: { search: "" },
   stores: [],
   userRatings: {},
-  storeDetails: null,
+  averageRatings: {},
+  storeRatings: [],
 
   setFilters: (filters) => set({ filters }),
 
@@ -26,8 +28,10 @@ export const useUserStore = create((set, get) => ({
       const { user, token } = res.data;
       localStorage.setItem("token", token);
       set({ user, role: user.role, loading: false });
+      toast.success("Login successful");
     } catch (err) {
       set({ loading: false });
+      toast.error(err?.response?.data?.message || "Login failed");
       throw err;
     }
   },
@@ -45,9 +49,11 @@ export const useUserStore = create((set, get) => ({
         }
       );
       const { user } = res.data;
-      set({ user, role: user.role, loading: false });
+      set({ user, loading: false });
+      toast.success("Signup successful");
     } catch (err) {
       set({ loading: false });
+      toast.error(err?.response?.data?.message || "Signup failed");
       throw err;
     }
   },
@@ -55,6 +61,7 @@ export const useUserStore = create((set, get) => ({
   logout: () => {
     localStorage.removeItem("token");
     set({ user: null, role: null });
+    toast.info("Logged out");
   },
 
   fetchDashboardStats: async () => {
@@ -68,6 +75,7 @@ export const useUserStore = create((set, get) => ({
       set({ summary: res.data });
     } catch (err) {
       console.error("Failed to fetch summary", err);
+      toast.error("Failed to fetch dashboard stats");
     }
   },
 
@@ -82,6 +90,7 @@ export const useUserStore = create((set, get) => ({
       set({ allUsers: res.data });
     } catch (err) {
       console.error("Failed to fetch users", err);
+      toast.error("Failed to fetch users");
     }
   },
 
@@ -96,6 +105,7 @@ export const useUserStore = create((set, get) => ({
       set({ allStores: res.data });
     } catch (err) {
       console.error("Failed to fetch stores", err);
+      toast.error("Failed to fetch stores");
     }
   },
 
@@ -113,56 +123,42 @@ export const useUserStore = create((set, get) => ({
           },
         }
       );
+      toast.success("User added successfully");
       return res.data;
     } catch (err) {
       set({ loading: false });
+      toast.error(err?.response?.data?.message || "Failed to add user");
       throw err;
     }
   },
 
   fetchStores: async () => {
-    const { data } = await axios.get("http://localhost:5000/api/stores");
-    set({ stores: data });
-  },
-
-  fetchUserRatings: async (userId) => {
     try {
-      const { data } = await axios.get(
-        `http://localhost:5000/api/ratings/user/${userId}`
-      );
-      if (Array.isArray(data)) {
-        const ratingsMap = {};
-        data.forEach((r) => {
-          ratingsMap[r.store_id] = r.rating;
-        });
-        set({ userRatings: ratingsMap });
-      } else {
-        console.error("Invalid data format received:", data);
-        set({ userRatings: {} });
-      }
-    } catch (error) {
-      console.error("Error fetching user ratings:", error);
-      set({ userRatings: {} });
+      const { data } = await axios.get("http://localhost:5000/api/stores");
+      set({ stores: data });
+    } catch (err) {
+      console.error("Error fetching stores:", err);
+      toast.error("Failed to fetch public stores");
     }
   },
 
-  submitRating: async ({ userId, storeId, rating }) => {
-    await axios.post("http://localhost:5000/api/ratings/submit", {
-      user_id: userId,
-      store_id: storeId,
-      rating,
-    });
-    await get().fetchUserRatings(userId);
-  },
-
-  fetchStoreDetails: async (ownerId) => {
+  submitRating: async ({ storeId, rating }) => {
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/ratings/user/${ownerId}`
+      const res = await axios.post(
+        "http://localhost:5000/api/ratings/submit",
+        { storeId, rating },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       );
-      set({ storeDetails: res.data });
+      toast.success("Rating submitted");
+      set({ userRatings: res.data.rating });
+      return res.data;
     } catch (err) {
-      console.error("Failed to fetch store details", err);
+      console.log(err);
+      toast.error("Failed to submit rating");
     }
   },
 
@@ -181,9 +177,11 @@ export const useUserStore = create((set, get) => ({
       return res.data;
     } catch (error) {
       console.error("Failed to fetch store owners", error);
+      toast.error("Failed to load store owners");
       return [];
     }
   },
+
   addStore: async (storeData) => {
     const token = localStorage.getItem("token");
     try {
@@ -197,9 +195,11 @@ export const useUserStore = create((set, get) => ({
           },
         }
       );
+      toast.success("Store added successfully");
       return res.data;
     } catch (error) {
       console.error("Failed to add store", error);
+      toast.error("Failed to add store");
       throw error;
     }
   },
@@ -212,10 +212,41 @@ export const useUserStore = create((set, get) => ({
           password: newPassword,
         }
       );
+      toast.success("Password updated");
       return { success: true, message: "Password updated successfully." };
     } catch (error) {
       console.error("Failed to update password", error);
+      toast.error("Password update failed");
       return { success: false, message: "Failed to update password." };
+    }
+  },
+
+  fetchAverageRatings: async () => {
+    try {
+      const stores = get().stores;
+      if (!Array.isArray(stores)) return;
+
+      const avgRatings = {};
+      for (const store of stores) {
+        const { data } = await axios.get(
+          `http://localhost:5000/api/ratings/${store.id}/average`
+        );
+        avgRatings[store.id] = parseFloat(data.averageRating);
+      }
+
+      set({ averageRatings: avgRatings });
+    } catch (err) {
+      toast.error("Failed to fetch average ratings");
+      console.error("Error fetching average ratings:", err);
+    }
+  },
+
+  fetchStoreRatings: async (storeId) => {
+    try {
+      const res = await axios.get(`/api/ratings/${storeId}/ratings`);
+      set({ storeRatings: res.data });
+    } catch (err) {
+      console.error("Failed to fetch store ratings", err);
     }
   },
 }));

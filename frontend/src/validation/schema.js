@@ -18,5 +18,5 @@ export const loginSchema = z.object({
     .string()
     .min(8, 'Minimum 8 characters')
     .max(16, 'Maximum 16 characters'),
-    role: z.enum(["USER", "ADMIN", "STORE-OWNER"], { message: "Invalid role selected" }),
+    role: z.enum(["USER", "ADMIN", "STORE_OWNER"], { message: "Invalid role selected" }),
 });

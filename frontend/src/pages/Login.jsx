@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../validation/schema";
 import { useUserStore } from "../store/useStore";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const { login } = useUserStore();
@@ -19,20 +19,28 @@ const Login = () => {
       await login(data.email, data.password, data.role);
       navigate("/");
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      console.log(err);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Login
+      <div className="hidden md:flex w-1/2 h-full items-center justify-center">
+        <img
+          src="/login-image.png"
+          alt="Login Illustration"
+          className="max-w-full max-h-[500px] object-contain"
+        />
+      </div>
+
+      <div className="w-full md:w-1/2 max-w-md bg-white p-10 rounded-xl shadow-2xl">
+        <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
+          Welcome Back!
         </h2>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="flex flex-col">
-            <label htmlFor="role" className="text-gray-600">
+            <label htmlFor="role" className="text-gray-700 font-medium">
               Role
             </label>
             <select
@@ -42,13 +50,13 @@ const Login = () => {
             >
               <option value="USER">User</option>
               <option value="ADMIN">Admin</option>
-              <option value="STORE-OWNER">Store Owner</option>
+              <option value="STORE_OWNER">Store Owner</option>
             </select>
             <p className="text-red-500 text-sm">{errors.role?.message}</p>
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="email" className="text-gray-600">
+            <label htmlFor="email" className="text-gray-700 font-medium">
               Email
             </label>
             <input
@@ -62,7 +70,7 @@ const Login = () => {
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="password" className="text-gray-600">
+            <label htmlFor="password" className="text-gray-700 font-medium">
               Password
             </label>
             <input
@@ -77,11 +85,22 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full py-2 mt-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
           >
             Login
           </button>
         </form>
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            Don’t have an account?{" "}
+            <Link
+              to="/signup"
+              className="text-blue-600 hover:underline font-semibold"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { validatePassword } = require("../utils/validatePassword");
 const generateToken = require("../utils/generateToken");
 
+
+
 exports.signup = async (req, res, next) => {
   try {
     const { name, email, password, address } = req.body;

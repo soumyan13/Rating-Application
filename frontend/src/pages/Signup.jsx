@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "../validation/schema";
 import { useUserStore } from "../store/useStore";
+import { Link } from "react-router-dom";
+import LottieSignup from "../components/lottieAnimations/LottieSignup";
 
 const Signup = () => {
   const { signup } = useUserStore();
@@ -15,81 +17,115 @@ const Signup = () => {
   const onSubmit = async (data) => {
     try {
       await signup(data);
-      alert("Signup successful");
     } catch (err) {
-      console.log(err);
-      alert("Signup failed");
+      console.error(err);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Sign Up
-        </h2>
+    <div className="min-h-screen w-full bg-gradient-to-tr from-blue-200 via-white to-purple-200 flex items-center justify-center p-4">
+      <div className="flex flex-col mt-20 md:flex-row w-full   items-center  ">
+        <div className="hidden md:block  h-full  ">
+          <LottieSignup />
+        </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="flex flex-col">
-            <label htmlFor="name" className="text-gray-600">
-              Name
-            </label>
-            <input
-              {...register("name")}
-              id="name"
-              placeholder="Enter your name"
-              className="mt-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-red-500 text-sm">{errors.name?.message}</p>
-          </div>
+        <div className="w-full md:w-[600px] bg-white p-8 rounded-3xl shadow-2xl">
+          <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
+            Create Account
+          </h2>
 
-          <div className="flex flex-col">
-            <label htmlFor="email" className="text-gray-600">
-              Email
-            </label>
-            <input
-              {...register("email")}
-              id="email"
-              placeholder="Enter your email"
-              className="mt-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-red-500 text-sm">{errors.email?.message}</p>
-          </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-gray-700 font-medium mb-1"
+              >
+                Name
+              </label>
+              <input
+                {...register("name")}
+                id="name"
+                placeholder="John Doe"
+                className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <p className="text-red-500 text-sm mt-1">
+                {errors.name?.message}
+              </p>
+            </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="address" className="text-gray-600">
-              Address
-            </label>
-            <input
-              {...register("address")}
-              id="address"
-              placeholder="Enter your address"
-              className="mt-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-red-500 text-sm">{errors.address?.message}</p>
-          </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-gray-700 font-medium mb-1"
+              >
+                Email
+              </label>
+              <input
+                {...register("email")}
+                id="email"
+                placeholder="you@example.com"
+                className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email?.message}
+              </p>
+            </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="password" className="text-gray-600">
-              Password
-            </label>
-            <input
-              {...register("password")}
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              className="mt-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-red-500 text-sm">{errors.password?.message}</p>
-          </div>
+            <div>
+              <label
+                htmlFor="address"
+                className="block text-gray-700 font-medium mb-1"
+              >
+                Address
+              </label>
+              <input
+                {...register("address")}
+                id="address"
+                placeholder="123 Main St"
+                className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <p className="text-red-500 text-sm mt-1">
+                {errors.address?.message}
+              </p>
+            </div>
 
-          <button
-            type="submit"
-            className="w-full py-2 mt-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Sign Up
-          </button>
-        </form>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-gray-700 font-medium mb-1"
+              >
+                Password
+              </label>
+              <input
+                {...register("password")}
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password?.message}
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-300"
+            >
+              Sign Up
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-blue-600 font-medium hover:underline"
+            >
+              Log In
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

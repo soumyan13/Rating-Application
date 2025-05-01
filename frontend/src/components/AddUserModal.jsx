@@ -5,6 +5,7 @@ const AddUserModal = ({ isOpen, onClose, refreshUsers }) => {
   const fetchDashboardStats = useUserStore(
     (state) => state.fetchDashboardStats
   );
+
   if (!isOpen) return null;
 
   const handleAddUser = async (e) => {
@@ -21,66 +22,73 @@ const AddUserModal = ({ isOpen, onClose, refreshUsers }) => {
     try {
       await useUserStore.getState().addUser(newUser);
       await fetchDashboardStats();
-      alert("User added successfully");
       form.reset();
       refreshUsers();
       onClose();
     } catch (err) {
-      alert("Failed to add user");
       console.error(err);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-3 text-xl font-bold text-gray-500 hover:text-red-600"
-        >
-          &times;
-        </button>
-        <h2 className="text-lg font-semibold mb-4">Add New User</h2>
-        <form onSubmit={handleAddUser} className="grid gap-3">
+    <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-40 backdrop-blur-sm">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md relative animate-fadeIn">
+        <h2 className="text-2xl font-semibold text-blue-700 mb-6 text-center">
+          Add New User
+        </h2>
+        <form onSubmit={handleAddUser} className="space-y-4">
           <input
             name="name"
             type="text"
             placeholder="Name"
-            className="p-2 border rounded"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
             required
           />
           <input
             name="email"
             type="email"
             placeholder="Email"
-            className="p-2 border rounded"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
             required
           />
           <input
             name="address"
             type="text"
             placeholder="Address"
-            className="p-2 border rounded"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
             required
           />
           <input
             name="password"
             type="password"
             placeholder="Password"
-            className="p-2 border rounded"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
             required
           />
-          <select name="role" className="p-2 border rounded" required>
+          <select
+            name="role"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+            required
+          >
             <option value="">Select Role</option>
             <option value="USER">Normal User</option>
-            <option value="STORE-OWNER">Store</option>
+            <option value="STORE_OWNER">Store Owner</option>
           </select>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-          >
-            Add User
-          </button>
+          <div className="flex justify-end space-x-4 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-2 rounded-md border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+            >
+              Add User
+            </button>
+          </div>
         </form>
       </div>
     </div>

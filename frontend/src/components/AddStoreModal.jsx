@@ -13,6 +13,7 @@ const AddStoreModal = ({ isOpen, onClose, refreshStores }) => {
   const fetchDashboardStats = useUserStore(
     (state) => state.fetchDashboardStats
   );
+  const fetchAllUsers = useUserStore((state) => state.fetchAllUsers);
 
   useEffect(() => {
     const loadOwners = async () => {
@@ -30,6 +31,7 @@ const AddStoreModal = ({ isOpen, onClose, refreshStores }) => {
     try {
       await addStore({ name, address, email, ownerId });
       await fetchDashboardStats();
+      await fetchAllUsers();
       refreshStores();
       onClose();
     } catch (error) {
@@ -40,35 +42,41 @@ const AddStoreModal = ({ isOpen, onClose, refreshStores }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded shadow w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Add New Store</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center  bg-opacity-70 backdrop-blur-sm transition-all">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md animate-fadeIn">
+        <h2 className="text-2xl font-semibold text-blue-700 mb-6 text-center">
+          Add New Store
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             placeholder="Store Name"
-            className="w-full p-2 border rounded"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
           />
           <input
             type="text"
             placeholder="Store Address"
-            className="w-full p-2 border rounded"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
+            required
           />
           <input
             type="email"
             placeholder="Store Email"
-            className="w-full p-2 border rounded"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <select
-            className="w-full p-2 border rounded"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
             value={ownerId}
             onChange={(e) => setOwnerId(e.target.value)}
+            required
           >
             <option value="">Select Store Owner</option>
             {owners.map((owner) => (
@@ -77,17 +85,17 @@ const AddStoreModal = ({ isOpen, onClose, refreshStores }) => {
               </option>
             ))}
           </select>
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-4 pt-4">
             <button
               type="button"
-              className="px-4 py-2 bg-gray-300 rounded"
+              className="px-5 py-2 rounded-md border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
               onClick={onClose}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded"
+              className="px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
             >
               Add Store
             </button>

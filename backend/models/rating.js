@@ -1,4 +1,4 @@
-const pool = require("../config/db");
+const { pool } = require("../config/db");
 
 const Rating = {
   async submitRating(userId, storeId, rating) {
@@ -24,7 +24,7 @@ const Rating = {
 
   async getRatingsByStoreId(storeId) {
     const [rows] = await pool.query(
-      `SELECT r.id, r.rating, u.name as userName
+      `SELECT r.id, r.rating, u.name as userName,u.email AS userEmail
        FROM ratings r
        JOIN users u ON r.user_id = u.id
        WHERE r.store_id = ?`,
