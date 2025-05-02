@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useUserStore } from "../store/useStore";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const renderStars = (rating) => {
   const stars = [];
@@ -38,10 +39,15 @@ const UserDashboard = () => {
     fetchAverageRatings,
     averageRatings,
     submitRating,
+    updatePassword,
   } = useUserStore();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [tempRatings, setTempRatings] = useState({});
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
@@ -73,6 +79,21 @@ const UserDashboard = () => {
     }
   };
 
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault();
+    if (!currentPassword || !newPassword) {
+      toast.error("Both fields are required");
+      return;
+    }
+
+    const result = await updatePassword(currentPassword, newPassword);
+    if (result.success) {
+      setCurrentPassword("");
+      setNewPassword("");
+      setShowPasswordForm(false);
+    }
+  };
+
   const filteredStores = Array.isArray(stores)
     ? stores.filter(
         (store) =>
@@ -82,7 +103,46 @@ const UserDashboard = () => {
     : [];
 
   return (
-    <div className="p-6 mt-18 bg-gradient-to-b from-blue-50 to-white min-h-screen">
+    <div className="relative p-6 mt-18 bg-gradient-to-b from-blue-50 to-white min-h-screen">
+      <div className="absolute right-6 top-6">
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 shadow"
+          onClick={() => setShowPasswordForm((prev) => !prev)}
+        >
+          {showPasswordForm ? "Cancel" : "Update Password"}
+        </button>
+
+        {showPasswordForm && (
+          <form
+            onSubmit={handlePasswordUpdate}
+            className="mt-2 bg-white border shadow-lg p-4 rounded-xl w-72 space-y-3"
+          >
+            <h3 className="font-bold text-lg text-gray-700">Change Password</h3>
+
+            <input
+              type="password"
+              placeholder="Current Password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="w-full p-2 border rounded"
+            />
+            <input
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="w-full p-2 border rounded"
+            />
+            <button
+              type="submit"
+              className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+            >
+              Submit
+            </button>
+          </form>
+        )}
+      </div>
+
       <h2 className="text-4xl font-bold text-gray-800 mb-6">
         Welcome User,{" "}
         <span className="text-blue-800 text-4xl">{user?.name}</span>

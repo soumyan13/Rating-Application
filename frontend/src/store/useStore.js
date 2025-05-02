@@ -204,19 +204,22 @@ export const useUserStore = create((set, get) => ({
     }
   },
 
-  updatePassword: async (userId, newPassword) => {
+  updatePassword: async (currentPassword, newPassword) => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/users/${userId}/update-password`,
+      await axios.patch(
+        "http://localhost:5000/api/auth/update-password",
+        { currentPassword, newPassword },
         {
-          password: newPassword,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
       );
-      toast.success("Password updated");
+      toast.success("Password updated successfully");
       return { success: true, message: "Password updated successfully." };
     } catch (error) {
       console.error("Failed to update password", error);
-      toast.error("Password update failed");
+      toast.error(error.response?.data?.message || "Password update failed");
       return { success: false, message: "Failed to update password." };
     }
   },

@@ -3,8 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { validatePassword } = require("../utils/validatePassword");
 const generateToken = require("../utils/generateToken");
-
-
+const { pool } = require("../config/db");
 
 exports.signup = async (req, res, next) => {
   try {
