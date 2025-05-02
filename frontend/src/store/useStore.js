@@ -243,7 +243,9 @@ export const useUserStore = create((set, get) => ({
 
   fetchStoreRatings: async (storeId) => {
     try {
-      const res = await axios.get(`/api/ratings/${storeId}/ratings`);
+      const res = await axios.get(
+        `http://localhost:5000/api/ratings/${storeId}/ratings`
+      );
       set({ storeRatings: res.data });
     } catch (err) {
       console.error("Failed to fetch store ratings", err);

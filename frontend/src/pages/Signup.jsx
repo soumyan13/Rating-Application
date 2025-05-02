@@ -5,9 +5,11 @@ import { signupSchema } from "../validation/schema";
 import { useUserStore } from "../store/useStore";
 import { Link } from "react-router-dom";
 import LottieSignup from "../components/lottieAnimations/LottieSignup";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const { signup } = useUserStore();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -17,6 +19,7 @@ const Signup = () => {
   const onSubmit = async (data) => {
     try {
       await signup(data);
+      navigate("/login");
     } catch (err) {
       console.error(err);
     }

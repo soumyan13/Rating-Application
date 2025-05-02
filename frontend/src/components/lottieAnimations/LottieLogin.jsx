@@ -1,16 +1,14 @@
 import React from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
-
-
-const LottieSignup = () => {
+const LottieLogin = () => {
   return (
     <DotLottieReact
-      src="signup.lottie" 
+      src="login.lottie"
+      loop
       autoplay
-      style={{ width: "800px", height: "600px" }}
     />
   );
 };
 
-export default LottieSignup;
+export default LottieLogin;

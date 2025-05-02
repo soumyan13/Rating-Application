@@ -157,7 +157,11 @@ const AdminDashboard = () => {
                   <td className="p-4">{s.name}</td>
                   <td className="p-4">{s.email}</td>
                   <td className="p-4">{s.address}</td>
-                  <td className="p-4">{s.rating || "N/A"}</td>
+                  <td className="p-4">
+                    {s.averageRating
+                      ? parseFloat(s.averageRating).toFixed(1)
+                      : "N/A"}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../validation/schema";
 import { useUserStore } from "../store/useStore";
 import { useNavigate, Link } from "react-router-dom";
+import LottieLogin from "../components/lottieAnimations/LottieLogin";
 
 const Login = () => {
   const { login } = useUserStore();
@@ -24,16 +25,12 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen pt-10 flex items-center justify-baseline bg-gray-100">
       <div className="hidden md:flex w-1/2 h-full items-center justify-center">
-        <img
-          src="/login-image.png"
-          alt="Login Illustration"
-          className="max-w-full max-h-[500px] object-contain"
-        />
+        <LottieLogin />
       </div>
 
-      <div className="w-full md:w-1/2 max-w-md bg-white p-10 rounded-xl shadow-2xl">
+      <div className="w-full md:w-1/2 max-w-lg bg-white p-10 rounded-xl  shadow-2xl">
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
           Welcome Back!
         </h2>
