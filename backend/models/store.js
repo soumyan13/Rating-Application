@@ -13,7 +13,7 @@ const Store = {
 
   async getAllStores() {
     const [rows] = await pool.query(
-      `SELECT s.id, s.name, s.email, s.address,
+      `SELECT s.id, s.name, s.email, s.address,s.owner_id,
               (SELECT AVG(rating) FROM ratings WHERE store_id = s.id) AS averageRating
        FROM stores s`
     );

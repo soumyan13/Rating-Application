@@ -14,6 +14,8 @@ export const useUserStore = create((set, get) => ({
   userRatings: {},
   averageRatings: {},
   storeRatings: [],
+  store: null,
+  error: null,
 
   setFilters: (filters) => set({ filters }),
 
@@ -27,6 +29,8 @@ export const useUserStore = create((set, get) => ({
       });
       const { user, token } = res.data;
       localStorage.setItem("token", token);
+      localStorage.setItem("userId", user.id);
+
       set({ user, role: user.role, loading: false });
       toast.success("Login successful");
     } catch (err) {
@@ -60,6 +64,7 @@ export const useUserStore = create((set, get) => ({
 
   logout: () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
     set({ user: null, role: null });
     toast.info("Logged out");
   },
@@ -254,4 +259,16 @@ export const useUserStore = create((set, get) => ({
       console.error("Failed to fetch store ratings", err);
     }
   },
+
+
+  fetchStoreById: async (id) => {
+    set({ loading: true, error: null });
+    try {
+      const res = await axios.get(`http://localhost:5000/api/stores/${id}`);
+      set({ store: res.data, loading: false });
+    } catch (err) {
+      set({ error: err.message, loading: false });
+    }
+  }
+
 }));

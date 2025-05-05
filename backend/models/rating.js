@@ -24,10 +24,10 @@ const Rating = {
 
   async getRatingsByStoreId(storeId) {
     const [rows] = await pool.query(
-      `SELECT r.id, r.rating, u.name as userName,u.email AS userEmail, r.store_id as storeId
+      `SELECT r.id, r.rating, u.name as userName,u.email AS userEmail, r.store_id as storeId,r.owner_id as ownerId
        FROM ratings r
        JOIN users u ON r.user_id = u.id
-       WHERE r.store_id = ?`,
+       WHERE r.owner_id = ?`,
       [storeId]
     );
     return rows;
